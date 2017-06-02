@@ -98,30 +98,32 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	
 //Changes for the Hertz Blockchain
 
-   if len(args) != 1 {
+   if len(args) != 2 {
 	   return nil, errors.New("Incorrect number of arguments. Expecting 1")
 	}
     //Write the User Id "mail Id" arg[0] and password arg[1]
 	userid := args[0]															//argument for UserID
-	//password := args[1]  	//argument for password
-	str := `{"userid": "` + userid+ `"}`
+	password := args[1]  	//argument for password
+	str := `{"userid": "` + userid+ `", "password": "` + password + `"}`
 	
 	err = stub.PutState(userid, []byte(str))								//Put the userid and password in blockchain
 	if err != nil {
 		return nil, err
 	}
+	
+	
 //End of Changes for the Hertz Blockchain}
 
 	// Initialize the chaincode
-		Aval, err = strconv.Atoi(args[0])
-		if err != nil {
+	Aval, err = strconv.Atoi(args[0])
+	if err != nil {
 		return nil, errors.New("Expecting integer value for asset holding")
 	}
 
 	// Write the state to the ledger
 	err = stub.PutState("abc", []byte(strconv.Itoa(Aval)))				//making a test var "abc", I find it handy to read/write to it right away to test the network
-		if err != nil {
-			return nil, err
+	if err != nil {
+		return nil, err
 	}
 	
 	var empty []string
@@ -408,41 +410,41 @@ func (t *SimpleChaincode) signup_driver(stub shim.ChaincodeStubInterface, args [
 	//   0       1       			2						 3
 	// "Mainak", "Mandal", "mainakmandal@hotmail.com", "password"
 	if len(args) != 9 {
-		return nil, errors.New("Incorrect number of arguments. Expecting 9")
+		return nil, errors.New("Incorrect number of arguments. Expecting 4")
 	}
 
 	//input sanitation
 	fmt.Println("- start signup driver")
 	fmt.Println("-Amit C code-signup driver")
-	//if len(args[0]) <= 0 {
-		//return nil, errors.New("1st argument must be a non-empty string")
-	//}
-	//if len(args[1]) <= 0 {
-		//return nil, errors.New("2nd argument must be a non-empty string")
-	//}
-	//if len(args[2]) <= 0 {
-		//return nil, errors.New("3rd argument must be a non-empty string")
-	//}
-	//if len(args[3]) <= 0 {
-		//return nil, errors.New("4th argument must be a non-empty string")
-	//}
-	//if len(args[4]) <= 0 {
-		//return nil, errors.New("5th argument must be a non-empty string")
-	//}
-	//if len(args[5]) <= 0 {
-		//return nil, errors.New("6th argument must be a non-empty string")
-	//}
-	//if len(args[6]) <= 0 {
-		//return nil, errors.New("7th argument must be a non-empty string")
-	//}
-	//if len(args[7]) <= 0 {
-	//	return nil, errors.New("8th argument must be a non-empty string")
-	//}
-	//if len(args[8]) <= 0 {
-		//return nil, errors.New("9th argument must be a non-empty string")
-	//}*/
+	if len(args[0]) <= 0 {
+		return nil, errors.New("1st argument must be a non-empty string")
+	}
+	if len(args[1]) <= 0 {
+		return nil, errors.New("2nd argument must be a non-empty string")
+	}
+	if len(args[2]) <= 0 {
+		return nil, errors.New("3rd argument must be a non-empty string")
+	}
+	if len(args[3]) <= 0 {
+		return nil, errors.New("4th argument must be a non-empty string")
+	}
+	if len(args[4]) <= 0 {
+		return nil, errors.New("5th argument must be a non-empty string")
+	}
+	if len(args[5]) <= 0 {
+		return nil, errors.New("6th argument must be a non-empty string")
+	}
+	if len(args[6]) <= 0 {
+		return nil, errors.New("7th argument must be a non-empty string")
+	}
+	if len(args[7]) <= 0 {
+		return nil, errors.New("8th argument must be a non-empty string")
+	}
+	if len(args[8]) <= 0 {
+		return nil, errors.New("9th argument must be a non-empty string")
+	}
 	
-	fmt.Println("-After condition check-signup driver")
+	
 	
 	firstname := args[0]
 	lastname := strings.ToLower(args[1])
@@ -455,7 +457,6 @@ func (t *SimpleChaincode) signup_driver(stub shim.ChaincodeStubInterface, args [
 	zip := strings.ToLower(args[8])
 	status := "P" 
 
-	fmt.Println("-After passing values-signup driver")
 	
 	//if err != nil {
 		//return nil, errors.New("3rd argument must be a numeric string")
@@ -475,12 +476,9 @@ func (t *SimpleChaincode) signup_driver(stub shim.ChaincodeStubInterface, args [
 	}
 	
 	//build the marble json string manually
-	fmt.Println("-before putstate -signup driver")
 	str := `{"firstname": "` + firstname + `", "lastname": "` + lastname + `", "email": "` + email + `",  "mobile": "` + mobile + `", "password": "` + password + `","street": "` + street + `","city": "` + city + `","state": "` + state + `","zip": "` + zip + `","status": "` + status + `"}`
-	err = stub.PutState(email, []byte(str))		//store marble with id as key
-	fmt.Println("-before error condition check-signup driver")
+	err = stub.PutState(email, []byte(str))									//store marble with id as key
 	if err != nil {
-	    fmt.Println("-After putstate error-signup driver") 
 		return nil, err
 	}
 		
