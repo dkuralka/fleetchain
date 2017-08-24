@@ -44,16 +44,18 @@ type Marble struct{
 }
 
 type Driver struct{
-	FirstName string `json:"firstname"`					//the fieldtags are needed to keep case from bouncing around
-	LastName string `json:"lastname"`
+	Name string `json:"name"`
+	DL string `json:"dl"`		
+	DOB string `json:"dob"`	
 	Email string `json:"email"`
 	Mobile string `json:"mobile"`
 	Password string `json:"password"`
-	Street string `json:"street"`
-	City string `json:"city"`
-	State string `json:"state"`
-	Zip string `json:"zip"`
+	Address string `json:"address"`
 	Status string `json:"status"`
+	Modifyby string `json:"modifyby"`
+	Adminemail string `json:"adminemail"`
+	Rejectreason string `json:"rejectreason"`
+	Anycomment string `json:"anycomment"`
 }
 
 
@@ -80,7 +82,7 @@ type Adminlogin struct{
 
 // ============================================================================================================================
 // Main
-// ============================================================================================================================
+// =======================================================	=====================================================================
 func main() {
 	err := shim.Start(new(SimpleChaincode))
 	if err != nil {
@@ -228,7 +230,7 @@ func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) 
 	}
 
 	name = args[0]
-	valAsbytes, err := stub.GetState(name)									//get the var from chaincode state
+	valAsbytes, err := stub.GetState(name)	//get the var from chaincode 
 	if err != nil {
 		jsonResp = "{\"Error\":\"Failed to get state for " + name + "\"}"
 		return nil, errors.New(jsonResp)
@@ -409,53 +411,19 @@ func (t *SimpleChaincode) signup_driver(stub shim.ChaincodeStubInterface, args [
 
 	//   0       1       			2						 3
 	// "Mainak", "Mandal", "mainakmandal@hotmail.com", "password"
-	if len(args) != 9 {
-		return nil, errors.New("Incorrect number of arguments. Expecting 4")
-	}
-
-	//input sanitation
-	fmt.Println("- start signup driver")
-	fmt.Println("-Amit C code-signup driver")
-	if len(args[0]) <= 0 {
-		return nil, errors.New("1st argument must be a non-empty string")
-	}
-	if len(args[1]) <= 0 {
-		return nil, errors.New("2nd argument must be a non-empty string")
-	}
-	if len(args[2]) <= 0 {
-		return nil, errors.New("3rd argument must be a non-empty string")
-	}
-	if len(args[3]) <= 0 {
-		return nil, errors.New("4th argument must be a non-empty string")
-	}
-	if len(args[4]) <= 0 {
-		return nil, errors.New("5th argument must be a non-empty string")
-	}
-	if len(args[5]) <= 0 {
-		return nil, errors.New("6th argument must be a non-empty string")
-	}
-	if len(args[6]) <= 0 {
-		return nil, errors.New("7th argument must be a non-empty string")
-	}
-	if len(args[7]) <= 0 {
-		return nil, errors.New("8th argument must be a non-empty string")
-	}
-	if len(args[8]) <= 0 {
-		return nil, errors.New("9th argument must be a non-empty string")
-	}
 	
-	
-	
-	firstname := args[0]
-	lastname := strings.ToLower(args[1])
-	email := strings.ToLower(args[2])
-	mobile := strings.ToLower(args[3])
-	password := strings.ToLower(args[4])
-	street := strings.ToLower(args[5])
-	city := strings.ToLower(args[6])
-	state := strings.ToLower(args[7])
-	zip := strings.ToLower(args[8])
-	status := "P" 
+	name := args[0]
+	dl := args[1]
+	dob := args[2]
+	email := strings.ToLower(args[3])
+	mobile := args[4]
+	password := args[5]
+	address := args[6]
+	status := args[7]
+	modifyby := args[8]
+	adminemail := args[9]
+	rejectreason := args[10]
+	anycomment := args[11]
 
 	
 	//if err != nil {
@@ -476,7 +444,7 @@ func (t *SimpleChaincode) signup_driver(stub shim.ChaincodeStubInterface, args [
 	}
 	
 	//build the marble json string manually
-	str := `{"firstname": "` + firstname + `", "lastname": "` + lastname + `", "email": "` + email + `",  "mobile": "` + mobile + `", "password": "` + password + `","street": "` + street + `","city": "` + city + `","state": "` + state + `","zip": "` + zip + `","status": "` + status + `"}`
+	str := `{"name": "` + name + `", "dl": "` + dl + `", "dob": "` + dob + `", "email": "` + email + `",  "mobile": "` + mobile + `", "password": "` + password + `","address": "` + address + `","status": "` + status + `","modifyby": "` + modifyby + `" ,"adminemail": "` + adminemail + `" ,"rejectreason": "` + rejectreason + `" ,"anycomment": "` + anycomment + `"}`
 	err = stub.PutState(email, []byte(str))									//store marble with id as key
 	if err != nil {
 		return nil, err
@@ -537,7 +505,7 @@ func (t *SimpleChaincode) signup_driver(stub shim.ChaincodeStubInterface, args [
   	var err error
 	//   0       1
 	// "email", "status"
-	if len(args) < 10 {
+	if len(args) < 8 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 2")
 	}
 	
@@ -550,15 +518,17 @@ func (t *SimpleChaincode) signup_driver(stub shim.ChaincodeStubInterface, args [
 	}
 	res := Driver{}
 	json.Unmarshal(driverAsBytes, &res) 
-	 res.FirstName = args[1]	 //change the user
-	 res.LastName = args[2]
-	 res.Mobile = args[3]
-	 res.Password = args[4]
-	 res.Street = args[5]
-	 res.City = args[6]
-	 res.State = args[7]
-	 res.Zip = args[8]
-	 res.Status = args[9]
+	 res.Name = args[1]	 //change the user
+	 res.DL = args[2]
+	 res.DOB = args[3]
+	 res.Mobile = args[4]
+	 res.Password = args[5]
+	 res.Address = args[6]
+	 res.Status = args[7]
+	 res.Modifyby = args[8]
+	 res.Adminemail  = args[9]
+	 res.Rejectreason   = args[10]
+	 res.Anycomment   = args[11]
 	 
  	jsonAsBytes, _ := json.Marshal(res)
  	err = stub.PutState(args[0], jsonAsBytes)								//rewrite the user status with email-id as key
